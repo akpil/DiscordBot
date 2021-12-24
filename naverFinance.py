@@ -36,11 +36,11 @@ class NaverFinance:
             return "wrong sotck name"
 
     def GetCompanyCode(self, cursor, company_name):
-        sql = f"Select Name from StockData where Name like '%{company_name}%'"
+        sql = f"Select StockID from StockData where Name like '%{company_name}%'"
         cursor.execute(sql)
         result = cursor.fetchall()
 
-        if len(result) == 0:
+        if len(result) == 1:
             return result[0][0]
         else:
             res = []
