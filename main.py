@@ -84,6 +84,7 @@ async def on_message(message):
         cursor.execute(sql)
         await message.channel.send(f"슈퍼 겁쟁이 쉼터에 '{lastToken}'이 등록 됐습니다.", delete_after=5)
         message.delete()
+        CloseDB()
 
     elif message.content.startswith("$슈퍼 겁쟁이 쉼터 채널명 제거 "):
         db["ShyChannelNameArr"].remove(lastToken)
@@ -92,6 +93,7 @@ async def on_message(message):
         cursor.execute(sql)
         await message.channel.send(f"슈퍼 겁쟁이 쉼터에 '{lastToken}'이 제거 됐습니다.", delete_after=5)
         message.delete()
+        CloseDB()
 
     elif message.content.startswith("$사나이클럽 채널명 등록 "):
         db["TolerantChannelNameArr"].append(lastToken)
@@ -100,6 +102,7 @@ async def on_message(message):
         cursor.execute(sql)
         await message.channel.send(f"사나이클럽에 '{lastToken}'이 등록 됐습니다.", delete_after=5)
         message.delete()
+        CloseDB()
 
     elif message.content.startswith("$사나이클럽 채널명 제거 "):
         db["TolerantChannelNameArr"].remove(lastToken)
@@ -108,6 +111,7 @@ async def on_message(message):
         cursor.execute(sql)
         await message.channel.send(f"사나이클럽에 '{lastToken}'이 제거 됐습니다.", delete_after=5)
         message.delete()
+        CloseDB()
 
     elif (shyFlag or torFlag) and message.content.startswith("$주가 보기"):
         processingMsg = await message.channel.send("처리중")
@@ -122,6 +126,7 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
+        CloseDB()
 
     elif (shyFlag or torFlag) and message.content.startswith("$종목 번호 보기 "):
         processingMsg = await message.channel.send("처리중")
@@ -136,6 +141,7 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
+        CloseDB()
 
     elif (shyFlag or torFlag) and message.content.startswith("$내 종목 등록 "):
         processingMsg = await message.channel.send("처리중")
@@ -165,6 +171,7 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
+        CloseDB()
 
     elif (shyFlag or torFlag) and message.content.startswith("$내 종목 제거 "):
         processingMsg = await message.channel.send("처리중")
@@ -188,12 +195,14 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
+        CloseDB()
     elif (shyFlag or torFlag) and message.content.startswith("$내 종목 완전 제거 "):
         processingMsg = await message.channel.send("처리중")
         user = str(message.author)
         sql = f"select Count, EvalCost from UserData where ID = '{user}';"
         cursor = OpenDB()
         cursor.execute(sql)
+        CloseDB()
 
     elif (shyFlag or torFlag) and message.content.startswith("$내 종목 보기"):
         user = str(message.author)
@@ -216,13 +225,14 @@ async def on_message(message):
             index += 1
             await processingMsg.delete()
             await message.channel.send(res)
+        CloseDB()
+
     elif (shyFlag or torFlag) and message.content.startswith("$마법의 소라고동 매수"):
         await message.channel.send(TrumpetShellAskBuy())
     elif (shyFlag or torFlag) and message.content.startswith("$마법의 소라고동 손절"):
         await message.channel.send(TrumpetShellAskSell())
     elif message.content.startswith("$"):
-        await message.channel.send(helpMsg)
-    CloseDB()
+        await message.channel.send(helpMsg)    
 
 def ShyReaction(price, userprice, count):
     gap = userprice - price
