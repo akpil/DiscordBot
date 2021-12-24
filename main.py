@@ -245,7 +245,7 @@ async def on_message(message):
         await message.channel.send(helpMsg)    
 
 def ShyReaction(price, userprice, count):
-    gap = userprice - price
+    gap = price - userprice
     pfWeight = gap / price
 
     if pfWeight > 0.03:
@@ -255,13 +255,13 @@ def ShyReaction(price, userprice, count):
     elif pfWeight > -0.01:
         return "https://tenor.com/view/i-mav3riq-imaveriq-eh-meh-gif-9056024"
     elif pfWeight > -0.03:
-        return "https://discord.com/channels/921005414710128670/922386044094148648/923872420903923712"
+        return "https://tenor.com/view/pokemon-sad-pikachu-tears-emotional-gif-17858351"
     else:
         return "https://tenor.com/view/sad-blackish-anthony-anderson-tears-upset-gif-4988274"
 
 def TorReaction(price, userprice, count):
     currency = "{:,}".format(price)
-    gap = (userprice - price) * count
+    gap = (price - userprice) * count
     gapCurrency = "{:,}".format(gap)
     gbp = gap / 7000
     gbpCount = "{:,.2f}".format(abs(gbp))
@@ -287,7 +287,7 @@ def TrumpetShellAskBuy():
     return resStr
 def TrumpetShellAskSell():
     value = random.randrange(0, 3)
-    resStr = "마법의 소라고동님께 이 주식을 살지 여쭤봅니다.\n마법의 소라고동님이 답합니다.\n"
+    resStr = "마법의 소라고동님께 이 주식을 팔지 여쭤봅니다.\n마법의 소라고동님이 답합니다.\n"
     if value == 0:
         resStr += '"존버해"'
     elif value == 1:
