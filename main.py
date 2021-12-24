@@ -50,12 +50,12 @@ async def on_message(message):
     shyFlag = message.channel.name in db["ShyChannelNameArr"]
     torFlag = message.channel.name in db["TolerantChannelNameArr"]
     
-    channelDatabase = mysql.connector.connect(
+    Database = mysql.connector.connect(
     host="35.233.199.17",
     user = "root",
     passwd = os.environ.get("SQL_PW"),
     database = 'BotDB')
-    
+
     cursor = Database.Cursor()
     if message.content.startswith("$Help"):
         resMsg = '''[종목명] - 현재 KOSPI & KOSDAQ 상장사 전체를 대상으로 서칭합니다. 정확한 대상이 없고 유사결과만 나올 경우 목록을 보여줍니다.\n
