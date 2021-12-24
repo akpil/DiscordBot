@@ -53,7 +53,7 @@ async def on_message(message):
     Database = mysql.connector.connect(
     host="Akpil.mysql.pythonanywhere-services.com",
     user = "Akpil",
-    passwd = os.environ["MYSQL_PW"],
+    passwd = os.environ["SQL_PW"],
     database = 'Akpil$Channels')
     cursor = Database.Cursor()
     if message.content.startswith("$Help"):
