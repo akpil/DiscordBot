@@ -30,18 +30,18 @@ class NaverFinance:
         cursor.execute(sql)
         result = cursor.fetchall()
 
-        if len(result) == 0:
+        if len(result) == 1:
             return result[0][0]
         else:
             return "wrong sotck name"
 
     def GetCompanyCode(self, cursor, company_name):
-        sql = f"Select StockID from StockData where Name like '%{company_name}%'"
+        sql = f"Select Name, StockID from StockData where Name like '%{company_name}%'"
         cursor.execute(sql)
         result = cursor.fetchall()
 
         if len(result) == 1:
-            return result[0][0]
+            return result[0][1]
         else:
             res = []
             for e in result:
