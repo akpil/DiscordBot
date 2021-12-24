@@ -47,19 +47,17 @@ $마법의 소라고동 손절 - 마법의 소라고동님에게 손절해야할
 
 client = discord.Client()
 NFinance = naverFinance.NaverFinance()
-Database = None
+
 def OpenDB():
     Database = mysql.connector.connect(
     host="35.233.199.17",
     user = "root",
     passwd = os.environ.get("SQL_PW"),
     database = 'BotDB')
-    return Database.cursor()
-def CloseDB():
-    if Database is not None:
-        Database.commit()
-        Database.close()
-        Database = None
+    return Database
+def CloseDB(instance):
+    instance.commit()
+    instance.close()
 
 @client.event
 async def on_ready():
@@ -80,43 +78,48 @@ async def on_message(message):
     elif message.content.startswith("$슈퍼 겁쟁이 쉼터 채널명 등록 "):
         db["ShyChannelNameArr"].append(lastToken)
         sql = f"insert into ShyChannel (Name) values('{lastToken}');"
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         cursor.execute(sql)
         await message.channel.send(f"슈퍼 겁쟁이 쉼터에 '{lastToken}'이 등록 됐습니다.", delete_after=5)
         message.delete()
-        CloseDB()
+        CloseDB(Database)
 
     elif message.content.startswith("$슈퍼 겁쟁이 쉼터 채널명 제거 "):
         db["ShyChannelNameArr"].remove(lastToken)
         sql = f"delete from ShyChannel where Name = '{lastToken}';"
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         cursor.execute(sql)
         await message.channel.send(f"슈퍼 겁쟁이 쉼터에 '{lastToken}'이 제거 됐습니다.", delete_after=5)
         message.delete()
-        CloseDB()
+        CloseDB(Database)
 
     elif message.content.startswith("$사나이클럽 채널명 등록 "):
         db["TolerantChannelNameArr"].append(lastToken)
         sql = f"insert into TorChannel (Name) values('{lastToken}');"
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         cursor.execute(sql)
         await message.channel.send(f"사나이클럽에 '{lastToken}'이 등록 됐습니다.", delete_after=5)
         message.delete()
-        CloseDB()
+        CloseDB(Database)
 
     elif message.content.startswith("$사나이클럽 채널명 제거 "):
         db["TolerantChannelNameArr"].remove(lastToken)
         sql = f"delete from TorChannel where Name = '{lastToken}';"
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         cursor.execute(sql)
         await message.channel.send(f"사나이클럽에 '{lastToken}'이 제거 됐습니다.", delete_after=5)
         message.delete()
-        CloseDB()
+        CloseDB(Database)
 
     elif (shyFlag or torFlag) and message.content.startswith("$주가 보기"):
         processingMsg = await message.channel.send("처리중")
         
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         companyKey = NFinance.GetCompanyCode(cursor, lastToken)
         if type(companyKey) is str:
             price = NFinance.GetPrice(companyKey)
@@ -126,12 +129,13 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
-        CloseDB()
+        CloseDB(Database)
 
     elif (shyFlag or torFlag) and message.content.startswith("$종목 번호 보기 "):
         processingMsg = await message.channel.send("처리중")
 
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         companyKey = NFinance.GetCompanyCode(cursor, lastToken)
         if type(companyKey) is str:
             companyCode = NFinance.GetCompanyCode(cursor, lastToken)
@@ -141,12 +145,13 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
-        CloseDB()
+        CloseDB(Database)
 
     elif (shyFlag or torFlag) and message.content.startswith("$내 종목 등록 "):
         processingMsg = await message.channel.send("처리중")
 
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         companyName = messArr[len(messArr) - 3]
         companyKey = NFinance.GetCompanyCode(cursor, companyName)
 
@@ -171,12 +176,13 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
-        CloseDB()
+        CloseDB(Database)
 
     elif (shyFlag or torFlag) and message.content.startswith("$내 종목 제거 "):
         processingMsg = await message.channel.send("처리중")
 
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         companyKey = NFinance.GetCompanyCode(cursor, lastToken)
         user = str(message.author)
         if type(companyKey) is str:
@@ -195,19 +201,23 @@ async def on_message(message):
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
             await message.channel.send(fail_msg)
-        CloseDB()
-    elif (shyFlag or torFlag) and message.content.startswith("$내 종목 완전 제거 "):
+        CloseDB(Database)
+    elif (shyFlag or torFlag) and message.content.startswith("$내 종목 완전 제거"):
         processingMsg = await message.channel.send("처리중")
         user = str(message.author)
-        sql = f"select Count, EvalCost from UserData where ID = '{user}';"
-        cursor = OpenDB()
+        sql = f"delete from UserData where ID = '{user}';"
+        Database = OpenDB()
+        cursor = Database.cursor()
         cursor.execute(sql)
-        CloseDB()
+        CloseDB(Database)
+        await processingMsg.delete()
+        await message.channel.send(f"{user} 님의 정보가 성공적으로 제거됐습니다.")
 
     elif (shyFlag or torFlag) and message.content.startswith("$내 종목 보기"):
         user = str(message.author)
         sql = f"select StockID, Count, EvalCost from UserData where ID = '{user}';"
-        cursor = OpenDB()
+        Database = OpenDB()
+        cursor = Database.cursor()
         cursor.execute(sql)
         storedDatas = cursor.fetchall()
         func = ShyReaction
@@ -225,7 +235,7 @@ async def on_message(message):
             index += 1
             await processingMsg.delete()
             await message.channel.send(res)
-        CloseDB()
+        CloseDB(Database)
 
     elif (shyFlag or torFlag) and message.content.startswith("$마법의 소라고동 매수"):
         await message.channel.send(TrumpetShellAskBuy())
