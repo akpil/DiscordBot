@@ -22,7 +22,6 @@ class NaverFinance:
 
         no_today = soup.select_one("p.no_today")
         blind = no_today.select_one("span.blind")
-        print(blind.text.replace(',',''))
         return blind.text
 
     def GetComapnyName(self, cursor, company_code):

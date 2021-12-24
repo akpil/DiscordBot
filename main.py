@@ -133,6 +133,7 @@ async def on_message(message):
 
         stockCount = messArr[len(messArr) - 2]
         avegCost = lastToken
+        avegCostStr = "{:,}".format(int(avegCost))
         user = str(message.author)
         if type(companyKey) is str:
             sql = f"select Count, EvalCost from UserData where ID = '{user}' and StockID = '{companyKey}';"
@@ -142,10 +143,11 @@ async def on_message(message):
                 query = f"insert into UserData (ID, StockID, Count, EvalCost) values('{user}', '{companyKey}', {stockCount}, {avegCost});"
                 cursor.execute(query)
                 await processingMsg.delete()
-                await message.channel.send(f"정보>> {companyName}({companyKey}) {stockCount}주 평단가 {avegCost}로 등록 완료했습니다.")
+                await message.channel.send(f"정보>> {companyName}({companyKey}) {stockCount}주 평단가 {avegCostStr}로 등록 완료했습니다.")
             else:
                 await processingMsg.delete()
-                await message.channel.send(f"이미 정보가 저장돼있습니다. {companyName} {storedDatas[0][0]}주 평단가 {storedDatas[0][1]}")
+                avegCostStr = "{:,}".format(storedDatas[0][1])
+                await message.channel.send(f"이미 정보가 저장돼있습니다. {companyName} {storedDatas[0][0]}주 평단가 {avegCostStr}")
         else:
             fail_msg = GetFailMsg(companyKey)
             await processingMsg.delete()
@@ -206,7 +208,7 @@ async def on_message(message):
 def ShyReaction(price, userprice, count):
     gap = userprice - price
     pfWeight = gap / price
-    print(pfWeight)
+    
     if pfWeight > 0.03:
         return "https://tenor.com/view/john-jonah-jameson-lol-laughing-hysterically-laughing-out-loud-funny-gif-17710543"
     elif pfWeight > 0.01:
