@@ -44,10 +44,9 @@ class NaverFinance:
         else:
             res = []
             count = len(result)
-            print(count)
             lineCount = min (count, 10)
             for i in range(lineCount):
                 res.append(result[i][0])
             if count > lineCount:
-                res.append("......")
+                res.append(f"...... 총 {count} 개")
             return res
