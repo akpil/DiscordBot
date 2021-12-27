@@ -242,7 +242,10 @@ async def on_message(message):
     elif (shyFlag or torFlag) and message.content.startswith("$마법의 소라고동 손절"):
         await message.channel.send(TrumpetShellAskSell())
     elif message.content.startswith("$"):
-        await message.channel.send(helpMsg)    
+        if shyFlag or torFlag:
+            await message.channel.send(helpMsg)    
+        else:
+            await.message.channel.send("등록돼지 않은 채널명 입니다. 기능이 등록된 채널에서 다시 시도해주세요.")
 
 def ShyReaction(price, userprice, count):
     gap = price - userprice
