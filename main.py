@@ -245,7 +245,7 @@ async def on_message(message):
         if shyFlag or torFlag:
             await message.channel.send(helpMsg)    
         else:
-            await.message.channel.send("등록돼지 않은 채널명 입니다. 기능이 등록된 채널에서 다시 시도해주세요.")
+            await message.channel.send("등록돼지 않은 채널명 입니다. 기능이 등록된 채널에서 다시 시도해주세요.")
 
 def ShyReaction(price, userprice, count):
     gap = price - userprice
