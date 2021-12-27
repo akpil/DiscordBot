@@ -43,10 +43,11 @@ class NaverFinance:
             return result[0][1]
         else:
             res = []
-            count = len(res)
+            count = len(result)
+            print(count)
             lineCount = min (count, 10)
             for i in range(lineCount):
-                res.append(res[i][0])
+                res.append(result[i][0])
             if count > lineCount:
                 res.append("......")
             return res
